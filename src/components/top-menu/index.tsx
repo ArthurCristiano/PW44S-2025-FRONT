@@ -73,7 +73,7 @@ const TopMenu: React.FC = () => {
             onClick={() => navigate("/")}
         >
             <img
-                src="/assets/images/utfpr-logo-nb.png"
+                src="/assets/images/logo.png"
                 alt="Logo"
                 height={32}
                 style={{ objectFit: "contain" }}

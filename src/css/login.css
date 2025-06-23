@@ -1,0 +1,38 @@
+.btnForm {
+    background-color: #ff9400;
+    color: white;
+    margin-top: 1rem;
+    cursor: pointer;
+}
+
+.error {
+    color: red;
+    font-size: 0.85rem;
+    margin-top: 4px;
+    display: block;
+}
+
+.input-error {
+    border-color: red !important;
+}
+
+.registrar-logout-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.logoutLabel {
+    color: red;
+    cursor: pointer;
+}
+
+.register-link {
+    color: #ff9400; /* A mesma cor do seu botão para consistência */
+    font-weight: bold; /* Deixa o link com mais destaque */
+    text-decoration: none; /* Remove o sublinhado padrão */
+    font-size: inherit; /* Faz o link ter o mesmo tamanho do texto ao redor (o <small>) */
+}
+
+.register-link:hover {
+    text-decoration: underline; /* Adiciona o sublinhado quando o mouse passa por cima */
+}
