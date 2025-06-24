@@ -13,6 +13,7 @@ import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import "primeflex/primeflex.css";
 import { AuthProvider } from "@/context/AuthContext";
+import { CartProvider } from "@/context/hooks/use-cart.tsx";
 
 const themeId = "theme-link";
 const themeHref =
@@ -28,7 +29,9 @@ createRoot(document.getElementById("root")!).render(
         <BrowserRouter>
             <PrimeReactProvider>
                 <AuthProvider>
-                    <App />
+                    <CartProvider>
+                        <App />
+                    </CartProvider>
                 </AuthProvider>
             </PrimeReactProvider>
         </BrowserRouter>

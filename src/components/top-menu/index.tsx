@@ -6,16 +6,17 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/hooks/use-auth.ts";
 import { InputSwitch } from "primereact/inputswitch";
 import { InputText } from "primereact/inputtext";
-import { Dropdown } from "primereact/dropdown";
 import logoSrc from "@/assets/images/logo.png";
+import { useCart } from "@/context/hooks/use-cart";
+import { Badge } from 'primereact/badge';
 
 const TopMenu: React.FC = () => {
-
     const navigate = useNavigate();
     const [darkMode, setDarkMode] = useState<boolean>(() => {
         return localStorage.getItem("theme") === "dark";
     });
     const { authenticated, handleLogout } = useAuth();
+    const { cartCount } = useCart();
 
     useEffect(() => {
         const themeLink = document.getElementById("theme-link") as HTMLLinkElement;
@@ -32,19 +33,34 @@ const TopMenu: React.FC = () => {
         navigate("/login");
     };
 
+    // CORREÇÃO: Todos os links de navegação foram unificados no Menubar
     const menuItems: MenuItem[] = authenticated
-        ? [{ label: "Home", icon: "pi pi-home", command: () => navigate("/") }]
+        ? [
+            { label: "Home", icon: "pi pi-home", command: () => navigate("/home") },
+            {
+                label: "Categorias",
+                icon: "pi pi-box",
+                items: [
+                    { label: "Listar", icon: "pi pi-list", command: () => navigate("/categories") },
+                    { label: "Nova", icon: "pi pi-plus", command: () => navigate("/categories/new") },
+                ]
+            },
+            { label: "Produtos", icon: "pi pi-shopping-bag", command: () => navigate("/products") },
+            {
+                label: "Carrinho",
+                icon: "pi pi-shopping-cart",
+                command: () => navigate("/cart"),
+                template: (item, options) => (
+                    <a onClick={options.onClick} className={options.className} role="menuitem">
+                        <span className={options.iconClassName}></span>
+                        <span className={options.labelClassName}>{item.label}</span>
+                        {cartCount > 0 && <Badge value={cartCount} severity="danger" className="ml-2"></Badge>}
+                    </a>
+                )
+            },
+            { label: "Pedidos", icon: "pi pi-receipt", command: () => navigate("/orders") },
+        ]
         : [];
-
-    const categoryOptions = [
-        { label: "Listar Categorias", value: "/categories" },
-        { label: "Nova Categoria", value: "/categories/new" },
-    ];
-
-    const productOptions = [
-        { label: "Listar Produtos", value: "/products" },
-        { label: "Novo Produto", value: "/products/new" },
-    ];
 
     const logo = (
         <div
@@ -57,7 +73,6 @@ const TopMenu: React.FC = () => {
                 height={40}
                 style={{ objectFit: "contain" }}
             />
-            {/*<span className="font-bold text-lg hidden sm:block">PW44S</span>*/}
         </div>
     );
 
@@ -97,31 +112,10 @@ const TopMenu: React.FC = () => {
             className="w-full"
         >
             <div className="flex align-items-center p-3 surface-card shadow-2">
-
+                {/* CORREÇÃO: O Menubar agora controla toda a navegação principal */}
                 <div className="flex align-items-center">
                     {logo}
                     <Menubar model={menuItems} className="border-none p-0 bg-transparent" />
-
-                    {authenticated && (
-                        <div className="flex align-items-center">
-                            <Dropdown
-                                value={null}
-                                options={categoryOptions}
-                                onChange={(e) => { if (e.value) navigate(e.value); }}
-                                placeholder="Categorias"
-                                className="border-none shadow-none bg-transparent text-color"
-                                style={{ "width": "160px" }}
-                            />
-                            <Dropdown
-                                value={null}
-                                options={productOptions}
-                                onChange={(e) => { if (e.value) navigate(e.value); }}
-                                placeholder="Produtos"
-                                className="border-none shadow-none bg-transparent text-color"
-                                style={{ "width": "150px" }}
-                            />
-                        </div>
-                    )}
                 </div>
 
                 <div className="flex-grow-1 flex justify-content-center px-4">
@@ -137,6 +131,5 @@ const TopMenu: React.FC = () => {
         </header>
     );
 };
-
 
 export default TopMenu;

@@ -4,6 +4,8 @@ import { RegisterPage } from "@/pages/register";
 import { HomePage } from "@/pages/home";
 import { RequireAuth } from "@/components/require-auth";
 import { Layout } from "@/components/layout";
+import { CartPage } from "@/pages/cart";
+
 // import {CategoryListPage} from "@/pages/category-list";
 // import {CategoryFormPage} from "@/pages/category-form";
 // import {ProductListPage} from "@/pages/product-list";
@@ -20,7 +22,9 @@ export function AppRoutes() {
                 {/* protected routes */}
                 <Route element={<RequireAuth />}>
                     <Route path="/" element={<HomePage />} />
-                {/*    <Route path="/home" element={<HomePage />} />*/}
+                    <Route path="/home" element={<HomePage />} />
+                    <Route path="/cart" element={<CartPage />} />
+
                 {/*    <Route path="/categories" element={<CategoryListPage />} />*/}
                 {/*    <Route path="/categories/new" element={<CategoryFormPage />} />*/}
                 {/*    <Route path="/categories/:id" element={<CategoryFormPage />} />*/}

@@ -45,3 +45,20 @@ export interface IProduct {
     urlImage?: string;
     category: ICategory;
 }
+
+export interface CartItem extends IProduct {
+    quantity: number;
+}
+
+export interface IOrderItem {
+    productId: number;
+    price: number;
+    quantity: number;
+}
+
+export interface IOrder {
+    id: number;
+    date: string;
+    userId: number;
+    items: IOrderItem[];
+}
