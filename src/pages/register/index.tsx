@@ -16,62 +16,88 @@ export const RegisterPage = () => {
         handleSubmit,
         formState: { errors, isSubmitting },
     } = useForm<IUserRegister>({
-        defaultValues: { username: "", password: "", email: "" },
-    }); // Formulário controlado com React Hook Form
-    const { signup } = AuthService; // Método no authService que realiza uma requisição HTTP POST para /users na API
-    const [loading, setLoading] = useState(false); // Objeto que controla o estado da requisição HTTP
-    const navigate = useNavigate(); // Hook do React Touter para redirecionar o usuário para uma nova rota
-    const toast = useRef<Toast>(null); // Hook para possibilitar o uso do componente Toast para exibir as mensagens de sucesso ou erro.
+        defaultValues: { name: "", username: "", email: "", password: "" },
+    });
 
-    const onSubmit = async (data: IUserRegister) => { // Função assíncrona para realizar o envio dos dados para API
+    const { signup } = AuthService;
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+    const toast = useRef<Toast>(null);
+
+    const onSubmit = async (data: IUserRegister) => {
         setLoading(true);
         try {
             const response = await signup(data);
-            if (response.status === 200 && response.data) {
+            if ((response.status === 200 || response.status === 201) && response.data) {
                 toast.current?.show({
                     severity: "success",
                     summary: "Sucesso",
-                    detail: "Usuário cadastrado com sucesso.",
+                    detail: "Usuário cadastrado com sucesso. Você será redirecionado.",
                     life: 3000,
                 });
                 setTimeout(() => {
                     navigate("/login");
-                }, 1000);
+                }, 2000);
             } else {
+                const errorMessage = response.message || "Falha ao cadastrar usuário.";
                 toast.current?.show({
                     severity: "error",
                     summary: "Erro",
-                    detail: "Falha ao cadastrar usuário.",
+                    detail: errorMessage,
                     life: 3000,
                 });
             }
-        } catch {
+        } catch (error: any) {
+            const errorMessage = error.response?.data?.message || "Ocorreu um erro inesperado.";
             toast.current?.show({
                 severity: "error",
                 summary: "Erro",
-                detail: "Falha ao cadastrar usuário.",
+                detail: errorMessage,
                 life: 3000,
             });
         } finally {
             setLoading(false);
         }
     };
+
     return (
-        <div className="flex justify-center items-start pt-30 px-4 bg-gray-100 dark:bg-gray-900">
-            <Toast ref={toast} />
-            <Card title="Registrar Conta" className="w-full max-w-md">
-                <form onSubmit={handleSubmit(onSubmit)} className="p-fluid space-y-4">
+        <div className="align-items-center">
+        <Toast ref={toast} />
+            <Card title="Criar Conta" className="w-full sm:w-25rem shadow-2">
+                <form onSubmit={handleSubmit(onSubmit)} className="p-fluid flex flex-column gap-3">
+
                     <div>
-                        <label className="block mb-2">Nome de Exibição</label>
+                        <label htmlFor="name" className="form-label text-white">Nome Completo</label>
+                        <Controller
+                            name="name"
+                            control={control}
+                            rules={{ required: "O nome completo é obrigatório." }}
+                            render={({ field, fieldState }) => (
+                                <InputText
+                                    id="name"
+                                    {...field}
+                                    className={classNames("form-control", { "p-invalid": fieldState.invalid })}
+                                    placeholder="Ex: Alana da Silva"
+                                />
+                            )}
+                        />
+                        {errors.name && (
+                            <small className="p-error">{errors.name.message}</small>
+                        )}
+                    </div>
+
+                    <div>
+                        <label htmlFor="username" className="form-label text-white">Nome de Usuário</label>
                         <Controller
                             name="username"
                             control={control}
-                            rules={{ required: "Campo obrigatório" }}
-                            render={({ field }) => (
+                            rules={{ required: "O nome de usuário é obrigatório." }}
+                            render={({ field, fieldState }) => (
                                 <InputText
+                                    id="username"
                                     {...field}
-                                    className={classNames({ "p-invalid": errors.username })}
-                                    placeholder="Ex: João das Neves"
+                                    className={classNames("form-control", { "p-invalid": fieldState.invalid })}
+                                    placeholder="Ex: alaninhe"
                                 />
                             )}
                         />
@@ -79,39 +105,52 @@ export const RegisterPage = () => {
                             <small className="p-error">{errors.username.message}</small>
                         )}
                     </div>
+
                     <div>
-                        <label className="block mb-2">Usuário</label>
+                        <label htmlFor="email" className="form-label text-white">Email</label>
                         <Controller
-                            name="username"
+                            name="email"
                             control={control}
-                            rules={{ required: "Campo obrigatório" }}
-                            render={({ field }) => (
+                            rules={{
+                                required: "O email é obrigatório.",
+                                pattern: {
+                                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                                    message: "Endereço de email inválido"
+                                }
+                            }}
+                            render={({ field, fieldState }) => (
                                 <InputText
+                                    id="email"
+                                    type="email"
                                     {...field}
-                                    className={classNames({ "p-invalid": errors.username })}
-                                    placeholder="Ex: jsnow"
+                                    className={classNames("form-control", { "p-invalid": fieldState.invalid })}
+                                    placeholder="seu@email.com"
                                 />
                             )}
                         />
-                        {errors.username && (
-                            <small className="p-error">{errors.username.message}</small>
+                        {errors.email && (
+                            <small className="p-error">{errors.email.message}</small>
                         )}
                     </div>
+
                     <div>
-                        <label className="block mb-2">Senha</label>
+                        <label htmlFor="password" className="form-label text-white">Senha</label>
                         <Controller
                             name="password"
                             control={control}
                             rules={{
-                                required: "Campo obrigatório",
-                                minLength: { value: 6, message: "Mínimo 6 caracteres" },
+                                required: "A senha é obrigatória.",
+                                minLength: { value: 6, message: "A senha deve ter no mínimo 6 caracteres." },
                             }}
-                            render={({ field }) => (
+                            render={({ field, fieldState }) => (
                                 <Password
+                                    id="password"
                                     {...field}
                                     toggleMask
                                     feedback={false}
-                                    className={classNames({ "p-invalid": errors.password })}
+                                    className={classNames({ 'p-invalid': fieldState.invalid })}
+                                    inputClassName="form-control"
+                                    placeholder="••••••"
                                 />
                             )}
                         />
@@ -119,20 +158,20 @@ export const RegisterPage = () => {
                             <small className="p-error">{errors.password.message}</small>
                         )}
                     </div>
+
                     <Button
                         type="submit"
                         label="Registrar"
+                        icon="pi pi-user-plus"
+                        className="btnForm"
                         loading={loading || isSubmitting}
                         disabled={loading || isSubmitting}
-                        className="w-full mt-3"
                     />
-                    <div className="text-center mt-3">
-                        <small>
-                            Já tem uma conta?{" "}
-                            <Link to="/login" className="text-primary">
-                                Fazer login
-                            </Link>
-                        </small>
+
+                    <div className="text-center">
+                        <Link to="/login" className="register-link">
+                            Já possui conta? Faça o Login
+                        </Link>
                     </div>
                 </form>
             </Card>
