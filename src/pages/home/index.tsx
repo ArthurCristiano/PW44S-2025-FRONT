@@ -6,7 +6,6 @@ import { Tag } from 'primereact/tag';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import ProductService from '@/services/product-service';
 import type { IProduct } from '@/commons/types';
-import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/context/hooks/use-cart'
 
 export const HomePage: React.FC = () => {

@@ -63,3 +63,15 @@ export interface IOrder {
     userId: number;
     items: IOrderItem[];
 }
+
+export interface IAddress {
+    id?: number;
+    description: string; // Ex: 'Casa', 'Trabalho'
+    zipCode: string;
+    street: string;
+    number: string;
+    complement?: string;
+    neighborhood: string;
+    city: string;
+    state: string;
+}

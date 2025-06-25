@@ -5,8 +5,9 @@ import { HomePage } from "@/pages/home";
 import { RequireAuth } from "@/components/require-auth";
 import { Layout } from "@/components/layout";
 import { CartPage } from "@/pages/cart";
-import { OrderHistoryPage } from "@/pages/orders"
-// import { OrderDetailPage } from "@/pages/orders/OrderDetailPage.tsx"
+import { OrderHistoryPage } from "@/pages/orders";
+import { AddressFormPage  } from "@/pages/address/index.tsx";
+// import { AddressListPage } from "@/pages/addresses/AddressListPage";
 
 // import {CategoryListPage} from "@/pages/category-list";
 // import {CategoryFormPage} from "@/pages/category-form";
@@ -27,7 +28,10 @@ export function AppRoutes() {
                     <Route path="/home" element={<HomePage />} />
                     <Route path="/cart" element={<CartPage />} />
                     <Route path="/orders" element={<OrderHistoryPage />} />
-                    {/*<Route path="/orders" element={<OrderDetailPage />} />*/}
+
+                    {/*<Route path="/addresses" element={<AddressListPage />} />*/}
+                    <Route path="/addresses/new" element={<AddressFormPage />} />
+                    <Route path="/addresses/edit/:id" element={<AddressFormPage />} />
 
                 {/*    <Route path="/categories" element={<CategoryListPage />} />*/}
                 {/*    <Route path="/categories/new" element={<CategoryFormPage />} />*/}
