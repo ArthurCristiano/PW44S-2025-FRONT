@@ -12,7 +12,6 @@ interface CreateOrderDTO {
 }
 
 const createOrder = async (cartItems: CartItem[]): Promise<IResponse> => {
-    // Transforma os itens do nosso carrinho local no formato DTO que a API espera.
     const orderToCreate: CreateOrderDTO = {
         items: cartItems.map(item => ({
             productId: item.id!,
@@ -23,7 +22,6 @@ const createOrder = async (cartItems: CartItem[]): Promise<IResponse> => {
 
     let response = {} as IResponse;
     try {
-        // Envia o DTO para o endpoint de criação
         const apiResponse = await api.post<IOrder>(orderURL, orderToCreate);
         response = {
             status: 201, // Created
@@ -63,10 +61,32 @@ const findByUser = async (): Promise<IResponse> => {
     return response;
 };
 
+const findById = async (id: number): Promise<IResponse> => {
+    let response = {} as IResponse;
+    try {
+        // Faz a chamada GET para o endpoint /orders/{id}
+        const apiResponse = await api.get<IOrder>(`${orderURL}/${id}`);
+        response = {
+            status: 200,
+            success: true,
+            message: "Pedido carregado com sucesso!",
+            data: apiResponse.data,
+        };
+    } catch (err: any) {
+        response = {
+            status: err.response?.status || 500,
+            success: false,
+            message: "Falha ao carregar o pedido.",
+            data: err.response?.data,
+        };
+    }
+    return response;
+};
 
 const OrderService = {
     createOrder,
-    findByUser, // Adicionando a nova função
+    findByUser,
+    findById,
 };
 
 export default OrderService;

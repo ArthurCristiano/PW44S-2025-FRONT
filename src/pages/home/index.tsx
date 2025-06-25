@@ -13,7 +13,6 @@ export const HomePage: React.FC = () => {
     const [products, setProducts] = useState<IProduct[]>([]);
     const [loading, setLoading] = useState(true);
     const { findAll } = ProductService;
-    const navigate = useNavigate();
     const toast = useRef<Toast>(null);
     const { addToCart } = useCart();
 
@@ -60,7 +59,7 @@ export const HomePage: React.FC = () => {
     };
 
     const cardHeader = (product: IProduct) => {
-        const imageUrl = `/images/products/${product.id}.png`;
+        const imageUrl = `"@/assets/images/products/${product.id}.png`;
         const placeholderUrl = `https://placehold.co/600x400/EEE/31343C?text=${product.name.replace(/\s/g, '+')}`;
 
         return (
