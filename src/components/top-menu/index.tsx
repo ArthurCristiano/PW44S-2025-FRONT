@@ -5,7 +5,6 @@ import { Button } from "primereact/button";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/hooks/use-auth.ts";
 import { InputSwitch } from "primereact/inputswitch";
-import { InputText } from "primereact/inputtext";
 import logoSrc from "@/assets/images/logo.png";
 import { useCart } from "@/context/hooks/use-cart";
 import { Badge } from 'primereact/badge';
@@ -33,7 +32,6 @@ const TopMenu: React.FC = () => {
         navigate("/login");
     };
 
-    // CORREÇÃO: Todos os links de navegação foram unificados no Menubar
     const menuItems: MenuItem[] = authenticated
         ? [
             { label: "Home", icon: "pi pi-home", command: () => navigate("/home") },
@@ -45,7 +43,14 @@ const TopMenu: React.FC = () => {
                     { label: "Nova", icon: "pi pi-plus", command: () => navigate("/categories/new") },
                 ]
             },
-            { label: "Produtos", icon: "pi pi-shopping-bag", command: () => navigate("/products") },
+            {
+                label: "Endereços",
+                icon: "pi pi-map-marker",
+                items: [
+                    { label: "Listar", icon: "pi pi-list", command: () => navigate("/addresses") },
+                    { label: "Novo", icon: "pi pi-plus", command: () => navigate("/addresses/new") },
+                ]
+            },
             {
                 label: "Carrinho",
                 icon: "pi pi-shopping-cart",
@@ -77,7 +82,7 @@ const TopMenu: React.FC = () => {
     );
 
     const controls = (
-        <div className="flex align-items-center gap-3">
+        <div className="flex align-items-center gap-3 ml-auto">
             <div className="flex align-items-center gap-2">
                 <i className={`pi pi-sun ${!darkMode && "text-yellow-500"}`} />
                 <InputSwitch
@@ -112,17 +117,12 @@ const TopMenu: React.FC = () => {
             className="w-full"
         >
             <div className="flex align-items-center p-3 surface-card shadow-2">
-                {/* CORREÇÃO: O Menubar agora controla toda a navegação principal */}
                 <div className="flex align-items-center">
                     {logo}
                     <Menubar model={menuItems} className="border-none p-0 bg-transparent" />
                 </div>
 
-                <div className="flex-grow-1 flex justify-content-center px-4">
-                    <span className="w-full" style={{ maxWidth: '500px' }}>
-                        <InputText placeholder="Pesquisar produtos..." className="w-full" />
-                    </span>
-                </div>
+                <div className="flex-grow-1"></div>
 
                 <div className="flex align-items-center">
                     {controls}
