@@ -7,7 +7,7 @@ import { Layout } from "@/components/layout";
 import { CartPage } from "@/pages/cart";
 import { OrderHistoryPage } from "@/pages/orders";
 import { AddressFormPage  } from "@/pages/address/index.tsx";
-// import { AddressListPage } from "@/pages/addresses/AddressListPage";
+import { AddressListPage } from "@/pages/address/AddressListPage.tsx";
 
 // import {CategoryListPage} from "@/pages/category-list";
 // import {CategoryFormPage} from "@/pages/category-form";
@@ -29,7 +29,7 @@ export function AppRoutes() {
                     <Route path="/cart" element={<CartPage />} />
                     <Route path="/orders" element={<OrderHistoryPage />} />
 
-                    {/*<Route path="/addresses" element={<AddressListPage />} />*/}
+                    <Route path="/addresses" element={<AddressListPage />} />
                     <Route path="/addresses/new" element={<AddressFormPage />} />
                     <Route path="/addresses/edit/:id" element={<AddressFormPage />} />
 
