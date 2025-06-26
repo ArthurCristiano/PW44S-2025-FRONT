@@ -21,7 +21,6 @@ export const CartPage: React.FC = () => {
     const navigate = useNavigate();
     const toast = useRef<Toast>(null);
 
-    // Função para finalizar a compra
     const handleCheckout = async () => {
         if (cartItems.length === 0) {
             toast.current?.show({ severity: 'warn', summary: 'Atenção', detail: 'Seu carrinho está vazio.' });
@@ -31,15 +30,41 @@ export const CartPage: React.FC = () => {
         const response = await OrderService.createOrder(cartItems);
 
         if (response.success) {
-            toast.current?.show({ severity: 'success', summary: 'Sucesso', detail: 'Pedido realizado com sucesso!' });
-            clearCart(); // Limpa o carrinho local
-            setTimeout(() => navigate('/orders'), 2000); // Redireciona para a página de pedidos (a ser criada)
+            toast.current?.show({ severity: 'success', summary: 'Sucesso', detail: 'Pedido realizado com sucesso! Redirecionando...' });
+            clearCart();
+            setTimeout(() => navigate('/orders'), 2000);
         } else {
             toast.current?.show({ severity: 'error', summary: 'Erro', detail: response.message || 'Falha ao finalizar o pedido.' });
         }
     };
 
-    // Template para a coluna de quantidade (InputNumber)
+    const formatCurrency = (value: number) => {
+        return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    };
+
+    const productBodyTemplate = (item: CartItem) => {
+        const imageUrl = `/images/products/${item.id}.png`;
+        const placeholderUrl = `https://placehold.co/64x64/EEE/31343C?text=${item.name.charAt(0)}`;
+
+        return (
+            <div className="flex align-items-center gap-3">
+                <img
+                    src={imageUrl}
+                    alt={item.name}
+                    width="64"
+                    className="shadow-1"
+                    onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.onerror = null;
+                        target.src = placeholderUrl;
+                    }}
+                />
+                <span className="font-semibold">{item.name}</span>
+            </div>
+        );
+    };
+
+    // AJUSTE: Controlando o tamanho do campo de input para diminuir o componente
     const quantityBodyTemplate = (item: CartItem) => {
         return (
             <InputNumber
@@ -53,18 +78,17 @@ export const CartPage: React.FC = () => {
                 incrementButtonClassName="p-button-secondary"
                 incrementButtonIcon="pi pi-plus"
                 decrementButtonIcon="pi pi-minus"
-                style={{ width: '8rem' }}
+                // Ajustando o estilo do campo de texto interno
+                inputStyle={{width: '3rem', textAlign: 'center'}}
             />
         );
     };
 
-    // Template para o subtotal de cada item
     const subtotalBodyTemplate = (item: CartItem) => {
         const subtotal = item.price * item.quantity;
-        return subtotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        return formatCurrency(subtotal);
     };
 
-    // Template para o botão de remover item
     const removeBodyTemplate = (item: CartItem) => {
         return (
             <Button
@@ -78,27 +102,41 @@ export const CartPage: React.FC = () => {
     const cartTotal = getCartTotal();
 
     const footer = (
-        <div className="text-right text-2xl font-bold">
-            Total: {cartTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+        <div className="text-right text-2xl font-bold p-3">
+            Total: {formatCurrency(cartTotal)}
+        </div>
+    );
+
+    const tableHeader = (
+        <div className="flex justify-content-between align-items-center">
+            <h2 className="m-0">Itens no Carrinho</h2>
+            <Button
+                label="Limpar Carrinho"
+                icon="pi pi-trash"
+                className="p-button-text p-button-danger"
+                onClick={clearCart}
+                disabled={cartItems.length === 0}
+            />
         </div>
     );
 
     return (
         <div className="p-4">
             <Toast ref={toast} />
-            <Card title="Meu Carrinho de Compras">
-                <DataTable value={cartItems} footer={footer} emptyMessage="Seu carrinho está vazio.">
-                    <Column field="name" header="Produto" />
-                    <Column header="Preço Unitário" body={(item: CartItem) => item.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} />
-                    <Column header="Quantidade" body={quantityBodyTemplate} />
-                    <Column header="Subtotal" body={subtotalBodyTemplate} />
-                    <Column body={removeBodyTemplate} style={{ width: '5rem', textAlign: 'center' }} />
+            <Card>
+                <DataTable value={cartItems} header={tableHeader} footer={footer} emptyMessage="Seu carrinho está vazio." responsiveLayout="scroll">
+                    <Column header="Produto" body={productBodyTemplate} style={{ minWidth: '20rem' }}/>
+                    <Column header="Preço Unitário" body={(item: CartItem) => formatCurrency(item.price)} style={{ width: '12rem', textAlign: 'right' }} headerStyle={{textAlign: 'right'}} />
+                    <Column header="Quantidade" body={quantityBodyTemplate} style={{ width: '10rem', textAlign: 'center' }}/>
+                    <Column header="Subtotal" body={subtotalBodyTemplate} style={{ width: '12rem', textAlign: 'right' }} headerStyle={{textAlign: 'right'}} />
+                    <Column body={removeBodyTemplate} style={{ width: '6rem', textAlign: 'center' }} />
                 </DataTable>
 
                 <div className="flex justify-content-end mt-4">
                     <Button
                         label="Finalizar Compra"
                         icon="pi pi-check"
+                        className="p-button-lg"
                         disabled={cartItems.length === 0}
                         onClick={handleCheckout}
                     />
