@@ -8,11 +8,7 @@ import { CartPage } from "@/pages/cart";
 import { OrderHistoryPage } from "@/pages/orders";
 import { AddressFormPage  } from "@/pages/address/index.tsx";
 import { AddressListPage } from "@/pages/address/AddressListPage.tsx";
-
-// import {CategoryListPage} from "@/pages/category-list";
-// import {CategoryFormPage} from "@/pages/category-form";
-// import {ProductListPage} from "@/pages/product-list";
-// import {ProductFormPage} from "@/pages/product-form";
+import { CheckoutPage } from "@/pages/checkout/index.tsx";
 
 export function AppRoutes() {
     return (
@@ -28,17 +24,10 @@ export function AppRoutes() {
                     <Route path="/home" element={<HomePage />} />
                     <Route path="/cart" element={<CartPage />} />
                     <Route path="/orders" element={<OrderHistoryPage />} />
-
                     <Route path="/addresses" element={<AddressListPage />} />
                     <Route path="/addresses/new" element={<AddressFormPage />} />
                     <Route path="/addresses/edit/:id" element={<AddressFormPage />} />
-
-                {/*    <Route path="/categories" element={<CategoryListPage />} />*/}
-                {/*    <Route path="/categories/new" element={<CategoryFormPage />} />*/}
-                {/*    <Route path="/categories/:id" element={<CategoryFormPage />} />*/}
-                {/*    <Route path="/products" element={<ProductListPage />} />*/}
-                {/*    <Route path="/products/new" element={<ProductFormPage />} />*/}
-                {/*    <Route path="/products/:id" element={<ProductFormPage />} />*/}
+                    <Route path="/checkout/:id" element={<CheckoutPage />} />
                 </Route>
             </Route>
         </Routes>

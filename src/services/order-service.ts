@@ -24,7 +24,7 @@ const createOrder = async (cartItems: CartItem[]): Promise<IResponse> => {
     try {
         const apiResponse = await api.post<IOrder>(orderURL, orderToCreate);
         response = {
-            status: 201, // Created
+            status: 201,
             success: true,
             message: "Pedido criado com sucesso!",
             data: apiResponse.data,
@@ -64,7 +64,6 @@ const findByUser = async (): Promise<IResponse> => {
 const findById = async (id: number): Promise<IResponse> => {
     let response = {} as IResponse;
     try {
-        // Faz a chamada GET para o endpoint /orders/{id}
         const apiResponse = await api.get<IOrder>(`${orderURL}/${id}`);
         response = {
             status: 200,
@@ -83,10 +82,34 @@ const findById = async (id: number): Promise<IResponse> => {
     return response;
 };
 
+const updateStatus = async (orderId: number, status: string): Promise<IResponse> => {
+    let response = {} as IResponse;
+    try {
+        const apiResponse = await api.put<IOrder>(`${orderURL}/${orderId}/status`, `"${status}"`, {
+            headers: { 'Content-Type': 'application/json' }
+        });
+        response = {
+            status: 200,
+            success: true,
+            message: "Status do pedido atualizado!",
+            data: apiResponse.data,
+        };
+    } catch (err: any) {
+        response = {
+            status: err.response?.status || 500,
+            success: false,
+            message: "Falha ao atualizar o status do pedido.",
+            data: err.response?.data,
+        };
+    }
+    return response;
+};
+
 const OrderService = {
     createOrder,
     findByUser,
     findById,
+    updateStatus,
 };
 
 export default OrderService;

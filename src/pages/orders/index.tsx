@@ -6,12 +6,15 @@ import { Toast } from 'primereact/toast';
 import { Tag } from 'primereact/tag';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import OrderService from '@/services/order-service';
-import type { IOrder, IOrderItem } from '@/commons/types';
+import type { IOrder } from '@/commons/types';
+import { Button } from 'primereact/button';
+import { useNavigate } from 'react-router-dom';
 
 export const OrderHistoryPage: React.FC = () => {
     const [orders, setOrders] = useState<IOrder[]>([]);
     const [loading, setLoading] = useState(true);
     const toast = useRef<Toast>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const loadUserOrders = async () => {
@@ -32,17 +35,12 @@ export const OrderHistoryPage: React.FC = () => {
         loadUserOrders();
     }, []);
 
-    // Função para definir a cor da Tag com base no status do pedido
     const getStatusSeverity = (status: string | undefined): 'success' | 'warning' | 'danger' | 'info' => {
         switch (status?.toLowerCase()) {
-            case 'pendente':
-                return 'warning'; // Amarelo
-            case 'concluído':
-                return 'success'; // Verde
-            case 'cancelado':
-                return 'danger';  // Vermelho
-            default:
-                return 'info';    // Azul para qualquer outro caso
+            case 'pendente': return 'warning';
+            case 'concluído': return 'success';
+            case 'cancelado': return 'danger';
+            default: return 'info';
         }
     };
 
@@ -60,16 +58,17 @@ export const OrderHistoryPage: React.FC = () => {
         });
     };
 
-    const rowExpansionTemplate = (order: IOrder) => {
+    const actionBodyTemplate = (order: IOrder) => {
         return (
-            <div className="p-3">
-                <h5>Itens do Pedido Nº {order.id}</h5>
-                <DataTable value={order.items}>
-                    <Column field="productId" header="ID do Produto" />
-                    <Column field="quantity" header="Quantidade" />
-                    <Column field="price" header="Preço Unitário" body={(item: IOrderItem) => formatCurrency(item.price)} />
-                    <Column header="Subtotal" body={(item: IOrderItem) => formatCurrency(item.price * item.quantity)} />
-                </DataTable>
+            <div className="flex">
+                {order.status?.toLowerCase() === 'pendente' && (
+                    <Button
+                        icon="pi pi-credit-card"
+                        className="p-button-rounded p-button-success p-button-text"
+                        tooltip="Finalizar Compra"
+                        onClick={() => navigate(`/checkout/${order.id}`)}
+                    />
+                )}
             </div>
         );
     };
@@ -88,24 +87,14 @@ export const OrderHistoryPage: React.FC = () => {
             <Card title="Meus Pedidos">
                 <DataTable
                     value={orders}
-                    rowExpansionTemplate={rowExpansionTemplate}
                     dataKey="id"
                     emptyMessage="Você ainda não fez nenhum pedido."
                 >
-                    <Column expander style={{ width: '5rem' }} />
                     <Column field="id" header="Nº do Pedido" />
                     <Column field="date" header="Data" body={(order: IOrder) => formatDate(order.date)} />
-                    {/* A COLUNA DE STATUS AGORA É DINÂMICA */}
-                    <Column
-                        header="Status"
-                        body={(order: IOrder) => (
-                            <Tag
-                                value={order.status}
-                                severity={getStatusSeverity(order.status)}
-                            />
-                        )}
-                    />
+                    <Column header="Status" body={(order: IOrder) => <Tag value={order.status} severity={getStatusSeverity(order.status)} />} />
                     <Column header="Total" body={(order: IOrder) => formatCurrency(calculateOrderTotal(order))} />
+                    <Column header="Ações" body={actionBodyTemplate} style={{ width: '8rem', textAlign: 'center' }} />
                 </DataTable>
             </Card>
         </div>
