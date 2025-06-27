@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from 'primereact/button';
-import { Card } from 'primereact/card';
 import { Toast } from 'primereact/toast';
 import { Tag } from 'primereact/tag';
 import { ProgressSpinner } from 'primereact/progressspinner';
@@ -8,12 +7,15 @@ import ProductService from '@/services/product-service';
 import type { IProduct } from '@/commons/types';
 import { useCart } from '@/context/hooks/use-cart'
 
+import { useNavigate } from 'react-router-dom';
+
 export const HomePage: React.FC = () => {
     const [products, setProducts] = useState<IProduct[]>([]);
     const [loading, setLoading] = useState(true);
     const { findAll } = ProductService;
     const toast = useRef<Toast>(null);
     const { addToCart } = useCart();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const loadProducts = async () => {
@@ -47,7 +49,8 @@ export const HomePage: React.FC = () => {
         return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     };
 
-    const handleAddToCart = (product: IProduct) => {
+    const handleAddToCart = (e: React.MouseEvent, product: IProduct) => {
+        e.stopPropagation(); // Impede que o clique "suba" para o card
         addToCart(product);
         toast.current?.show({
             severity: 'success',
@@ -58,29 +61,32 @@ export const HomePage: React.FC = () => {
     };
 
     const cardHeader = (product: IProduct) => {
-        const imageUrl = `"@/assets/images/products/${product.id}.png`;
+        const imageUrl = `/images/products/${product.id}.png`;
         const placeholderUrl = `https://placehold.co/600x400/EEE/31343C?text=${product.name.replace(/\s/g, '+')}`;
 
         return (
-            <img
-                alt={product.name}
-                src={imageUrl}
-                onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.onerror = null;
-                    target.src = placeholderUrl;
-                }}
-                className="w-full h-15rem object-cover"
-            />
+            <div className="overflow-hidden border-round-top">
+                <img
+                    alt={product.name}
+                    src={imageUrl}
+                    onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.onerror = null;
+                        target.src = placeholderUrl;
+                    }}
+                    className="w-full h-15rem object-cover transform hover:scale-110 transition-duration-300"
+                />
+            </div>
         );
     };
 
     const cardFooter = (product: IProduct) => (
-        <div className="flex justify-content-end">
+        <div className="pt-2">
             <Button
                 label="Adicionar ao Carrinho"
                 icon="pi pi-shopping-cart"
-                onClick={() => handleAddToCart(product)}
+                className="w-full"
+                onClick={(e) => handleAddToCart(e, product)}
             />
         </div>
     );
@@ -94,31 +100,39 @@ export const HomePage: React.FC = () => {
     }
 
     return (
-        <div className="p-4">
+        <div className="surface-section px-4 py-8 md:px-6 lg:px-8">
             <Toast ref={toast} />
-            <h1 className="text-3xl font-bold mb-4">Nossos Produtos</h1>
+            <div className="text-center font-bold text-4xl mb-6">
+                <span className="text-900">Nossos </span>
+                <span className="text-blue-600">Produtos</span>
+            </div>
 
-            <div className="grid">
+            <div className="grid -m-2">
                 {products.map(product => (
                     <div key={product.id} className="col-12 md:col-6 lg:col-4 xl:col-3 p-2">
-                        <Card
-                            title={product.name}
-                            subTitle={<Tag value={product.category.name} />}
-                            header={() => cardHeader(product)}
-                            footer={() => cardFooter(product)}
-                            className="shadow-2 h-full flex flex-column"
+                        {/* Ação de clique adicionada ao container do card */}
+                        <div
+                            className="p-4 border-1 surface-border surface-card border-round h-full flex flex-column cursor-pointer hover:shadow-4 transition-duration-200"
+                            onClick={() => navigate(`/products/details/${product.id}`)}
                         >
-                            <div className="flex flex-column justify-content-between flex-grow-1">
+                            {cardHeader(product)}
+                            <div className="flex-1 flex flex-column justify-content-between py-3">
                                 <div>
-                                    <p className="m-0 text-xl font-semibold">
-                                        {formatCurrency(product.price)}
-                                    </p>
-                                    <p className="mt-2 mb-0 text-color-secondary">
+                                    <Tag value={product.category.name} className="mr-2" />
+                                    {/* CORREÇÃO: Título com classe para truncar texto longo */}
+                                    <div className="text-xl font-bold text-900 mt-2 truncate">
+                                        {product.name}
+                                    </div>
+                                    <p className="mt-2 mb-3 text-color-secondary" style={{ height: '3em', overflow: 'hidden' }}>
                                         {product.description}
                                     </p>
                                 </div>
-                            </div>
-                        </Card>
+                                <div className="text-2xl font-semibold">
+                                    {formatCurrency(product.price)}
+                                </div>
+                            </div>s
+                            {cardFooter(product)}
+                        </div>
                     </div>
                 ))}
             </div>
