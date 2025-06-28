@@ -27,27 +27,6 @@ const save = async (address: IAddress): Promise<IResponse> => {
     return response;
 };
 
-const findAll = async (): Promise<IResponse> => {
-    let response = {} as IResponse;
-    try {
-        const apiResponse = await api.get(addressURL);
-        response = {
-            status: 200,
-            success: true,
-            message: "Endereços carregados com sucesso!",
-            data: apiResponse.data,
-        };
-    } catch (err: any) {
-        response = {
-            status: err.response?.status || 500,
-            success: false,
-            message: "Falha ao carregar endereços.",
-            data: err.response?.data,
-        };
-    }
-    return response;
-};
-
 const findById = async (id: number): Promise<IResponse> => {
     let response = {} as IResponse;
     try {
@@ -83,6 +62,27 @@ const remove = async (id: number): Promise<IResponse> => {
             status: err.response?.status || 500,
             success: false,
             message: "Falha ao remover endereço.",
+            data: err.response?.data,
+        };
+    }
+    return response;
+};
+
+const findAll = async (): Promise<IResponse> => {
+    let response = {} as IResponse;
+    try {
+        const apiResponse = await api.get(`${addressURL}/my-addresses`);
+        response = {
+            status: 200,
+            success: true,
+            message: "Endereços carregados com sucesso!",
+            data: apiResponse.data,
+        };
+    } catch (err: any) {
+        response = {
+            status: err.response?.status || 500,
+            success: false,
+            message: "Falha ao carregar endereços.",
             data: err.response?.data,
         };
     }

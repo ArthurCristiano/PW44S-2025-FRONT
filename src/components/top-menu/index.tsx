@@ -36,14 +36,6 @@ const TopMenu: React.FC = () => {
         ? [
             { label: "Home", icon: "pi pi-home", command: () => navigate("/home") },
             {
-                label: "Categorias",
-                icon: "pi pi-box",
-                items: [
-                    { label: "Listar", icon: "pi pi-list", command: () => navigate("/categories") },
-                    { label: "Nova", icon: "pi pi-plus", command: () => navigate("/categories/new") },
-                ]
-            },
-            {
                 label: "Endereços",
                 icon: "pi pi-map-marker",
                 items: [
@@ -114,9 +106,9 @@ const TopMenu: React.FC = () => {
                 right: 0,
                 zIndex: 1000,
             }}
-            className="w-full"
+            className="w-full surface-card shadow-2"
         >
-            <div className="flex align-items-center p-3 surface-card shadow-2">
+            <div className="flex align-items-center p-3">
                 <div className="flex align-items-center">
                     {logo}
                     <Menubar model={menuItems} className="border-none p-0 bg-transparent" />

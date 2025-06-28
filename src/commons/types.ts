@@ -66,7 +66,7 @@ export interface IOrder {
 
 export interface IAddress {
     id?: number;
-    description: string; // Ex: 'Casa', 'Trabalho'
+    description: string;
     zipCode: string;
     street: string;
     number: string;
@@ -74,4 +74,11 @@ export interface IAddress {
     neighborhood: string;
     city: string;
     state: string;
+}
+
+export interface IShippingOption {
+    id: number;
+    name: string;
+    price: number;
+    delivery_time: number;
 }

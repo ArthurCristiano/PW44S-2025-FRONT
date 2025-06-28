@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import type { IProduct, CartItem } from '@/commons/types.ts';
+import type { IProduct, CartItem, IShippingOption } from '@/commons/types';
 
 interface CartContextType {
     cartItems: CartItem[];
@@ -9,12 +9,14 @@ interface CartContextType {
     clearCart: () => void;
     getCartTotal: () => number;
     cartCount: number;
+    selectedShipping: IShippingOption | null;
+    selectShippingOption: (option: IShippingOption | null) => void;
 }
 
-const UseCart = createContext<CartContextType | undefined>(undefined);
+const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const useCart = () => {
-    const context = useContext(UseCart);
+    const context = useContext(CartContext);
     if (!context) {
         throw new Error('useCart deve ser usado dentro de um CartProvider');
     }
@@ -30,6 +32,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             return [];
         }
     });
+
+    const [selectedShipping, setSelectedShipping] = useState<IShippingOption | null>(null);
 
     useEffect(() => {
         localStorage.setItem('shoppingCart', JSON.stringify(cartItems));
@@ -66,6 +70,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
     const clearCart = () => {
         setCartItems([]);
+        setSelectedShipping(null); // Também limpa o frete ao limpar o carrinho
+    };
+
+    const selectShippingOption = (option: IShippingOption | null) => {
+        setSelectedShipping(option);
     };
 
     const getCartTotal = (): number => {
@@ -74,7 +83,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
     const cartCount = cartItems.reduce((count, item) => count + item.quantity, 0);
 
-
     const value = {
         cartItems,
         addToCart,
@@ -82,8 +90,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         updateQuantity,
         clearCart,
         getCartTotal,
-        cartCount
+        cartCount,
+        selectedShipping,
+        selectShippingOption,
     };
 
-    return <UseCart.Provider value={value}>{children}</UseCart.Provider>;
+    return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };
