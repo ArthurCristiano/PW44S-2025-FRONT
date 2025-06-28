@@ -50,7 +50,7 @@ export const HomePage: React.FC = () => {
     };
 
     const handleAddToCart = (e: React.MouseEvent, product: IProduct) => {
-        e.stopPropagation(); // Impede que o clique "suba" para o card
+        e.stopPropagation();
         addToCart(product);
         toast.current?.show({
             severity: 'success',
@@ -109,8 +109,7 @@ export const HomePage: React.FC = () => {
 
             <div className="grid -m-2">
                 {products.map(product => (
-                    <div key={product.id} className="col-12 md:col-6 lg:col-4 xl:col-3 p-2">
-                        {/* Ação de clique adicionada ao container do card */}
+                    <div key={product.id} className="col-12 md:col-6 lg:col-4 p-2">
                         <div
                             className="p-4 border-1 surface-border surface-card border-round h-full flex flex-column cursor-pointer hover:shadow-4 transition-duration-200"
                             onClick={() => navigate(`/products/details/${product.id}`)}
