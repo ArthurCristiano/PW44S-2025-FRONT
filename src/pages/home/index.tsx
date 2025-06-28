@@ -119,7 +119,6 @@ export const HomePage: React.FC = () => {
                             <div className="flex-1 flex flex-column justify-content-between py-3">
                                 <div>
                                     <Tag value={product.category.name} className="mr-2" />
-                                    {/* CORREÇÃO: Título com classe para truncar texto longo */}
                                     <div className="text-xl font-bold text-900 mt-2 truncate">
                                         {product.name}
                                     </div>
@@ -130,7 +129,7 @@ export const HomePage: React.FC = () => {
                                 <div className="text-2xl font-semibold">
                                     {formatCurrency(product.price)}
                                 </div>
-                            </div>s
+                            </div>
                             {cardFooter(product)}
                         </div>
                     </div>

@@ -87,7 +87,7 @@ export const CheckoutPage: React.FC = () => {
     const formatCurrency = (value: number) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
     const addressOptions = addresses.map(addr => ({
-        label: `${addr.description} - ${addr.street}, ${addr.number}`,
+        label: `${addr.neighborhood} - ${addr.street}, ${addr.number}`,
         value: addr.id
     }));
 

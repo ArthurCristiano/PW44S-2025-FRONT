@@ -93,7 +93,7 @@ export const AddressListPage: React.FC = () => {
                 <Toolbar className="mb-4" start={toolbarContent}></Toolbar>
                 <DataTable value={addresses} loading={loading} paginator rows={10} dataKey="id"
                            emptyMessage="Nenhum endereço cadastrado.">
-                    <Column field="description" header="Descrição" sortable style={{ minWidth: '12rem' }}></Column>
+                    <Column field="complement" header="Descrição" sortable style={{ minWidth: '12rem' }}></Column>
                     <Column field="street" header="Rua / Logradouro" sortable style={{ minWidth: '15rem' }}></Column>
                     <Column field="city" header="Cidade" sortable style={{ minWidth: '10rem' }}></Column>
                     <Column field="state" header="Estado" sortable style={{ width: '8rem' }}></Column>
