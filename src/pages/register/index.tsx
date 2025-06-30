@@ -77,7 +77,7 @@ export const RegisterPage = () => {
                                     id="name"
                                     {...field}
                                     className={classNames("form-control", { "p-invalid": fieldState.invalid })}
-                                    placeholder="Ex: Alana da Silva"
+                                    placeholder="Ex: Levi Ackerman"
                                 />
                             )}
                         />
@@ -97,7 +97,7 @@ export const RegisterPage = () => {
                                     id="username"
                                     {...field}
                                     className={classNames("form-control", { "p-invalid": fieldState.invalid })}
-                                    placeholder="Ex: alaninhe"
+                                    placeholder="Ex: levi"
                                 />
                             )}
                         />
