@@ -8,6 +8,7 @@ import type { IProduct } from '@/commons/types';
 import { useCart } from '@/context/hooks/use-cart'
 
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/context/hooks/use-auth';
 
 export const HomePage: React.FC = () => {
     const [products, setProducts] = useState<IProduct[]>([]);
@@ -16,6 +17,7 @@ export const HomePage: React.FC = () => {
     const toast = useRef<Toast>(null);
     const { addToCart } = useCart();
     const navigate = useNavigate();
+    const { authenticated  } = useAuth();
 
     useEffect(() => {
         const loadProducts = async () => {
@@ -51,13 +53,26 @@ export const HomePage: React.FC = () => {
 
     const handleAddToCart = (e: React.MouseEvent, product: IProduct) => {
         e.stopPropagation();
-        addToCart(product);
-        toast.current?.show({
-            severity: 'success',
-            summary: 'Sucesso',
-            detail: `${product.name} adicionado ao carrinho!`,
-            life: 2000
-        });
+        if (authenticated) {
+            addToCart(product);
+            toast.current?.show({
+                severity: 'success',
+                summary: 'Sucesso',
+                detail: `${product.name} adicionado ao carrinho!`,
+                life: 2000
+            });
+        } else {
+            toast.current?.show({
+                severity: 'info',
+                summary: 'Login Necessário',
+                detail: 'Faça login para adicionar produtos ao carrinho.',
+                life: 3000
+            });
+
+            setTimeout(() => {
+                navigate('/login');
+            }, 1000);
+        }
     };
 
     const cardHeader = (product: IProduct) => {

@@ -15,13 +15,13 @@ export function AppRoutes() {
         <Routes>
             <Route path="/" element={<Layout />}>
                 {/* public routes */}
+                <Route path="/" element={<HomePage />} />
+                <Route path="/home" element={<HomePage />} />
                 <Route path="login" element={<LoginPage />} />
                 <Route path="register" element={<RegisterPage />} />
 
                 {/* protected routes */}
                 <Route element={<RequireAuth />}>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/home" element={<HomePage />} />
                     <Route path="/cart" element={<CartPage />} />
                     <Route path="/orders" element={<OrderHistoryPage />} />
                     <Route path="/addresses" element={<AddressListPage />} />
