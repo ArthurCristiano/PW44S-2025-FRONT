@@ -156,7 +156,7 @@ export const CartPage: React.FC = () => {
                             <Button
                                 label="Finalizar Compra"
                                 icon="pi pi-check"
-                                className="p-button-lg w-full mt-3"
+                                className="p-button-lg w-full mt-3 btnForm"
                                 disabled={cartItems.length === 0}
                                 onClick={handleCheckout}
                             />

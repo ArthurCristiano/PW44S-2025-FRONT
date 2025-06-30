@@ -136,7 +136,7 @@ export const CheckoutPage: React.FC = () => {
                                 <Button
                                     label="Cadastrar Novo Endereço"
                                     icon="pi pi-plus"
-                                    className="p-button-text mt-2"
+                                    className="p-button-text mt-2 btnForm"
                                     onClick={() => navigate('/addresses/new')}
                                 />
                             </div>
@@ -148,7 +148,7 @@ export const CheckoutPage: React.FC = () => {
                                 <Button
                                     label="Concluir Pedido"
                                     icon="pi pi-check"
-                                    className="p-button-success w-full"
+                                    className="p-button-success w-full btnForm"
                                     onClick={handleConfirmPayment}
                                     disabled={!selectedAddress || isSubmitting}
                                     loading={isSubmitting}

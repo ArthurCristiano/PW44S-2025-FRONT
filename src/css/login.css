@@ -27,12 +27,12 @@
 }
 
 .register-link {
-    color: #ff9400; /* A mesma cor do seu botão para consistência */
-    font-weight: bold; /* Deixa o link com mais destaque */
-    text-decoration: none; /* Remove o sublinhado padrão */
-    font-size: inherit; /* Faz o link ter o mesmo tamanho do texto ao redor (o <small>) */
+    color: #ff9400;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: inherit;
 }
 
 .register-link:hover {
-    text-decoration: underline; /* Adiciona o sublinhado quando o mouse passa por cima */
+    text-decoration: underline;
 }

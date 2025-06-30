@@ -85,7 +85,7 @@ export const HomePage: React.FC = () => {
             <Button
                 label="Adicionar ao Carrinho"
                 icon="pi pi-shopping-cart"
-                className="w-full"
+                className="w-full btnForm"
                 onClick={(e) => handleAddToCart(e, product)}
             />
         </div>

@@ -153,8 +153,8 @@ export const AddressFormPage: React.FC = () => {
                     </div>
 
                     <div className="flex justify-content-end gap-2 mt-4">
-                        <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={() => navigate('/addresses')} />
-                        <Button type="submit" label="Salvar" icon="pi pi-check" loading={isSubmitting} />
+                        <Button label="Cancelar" icon="pi pi-times" severity="warning" className="p-button-text" onClick={() => navigate('/addresses')} />
+                        <Button type="submit" label="Salvar" icon="pi pi-check" severity="success" className="p-button-text" loading={isSubmitting} />
                     </div>
                 </form>
             </Card>

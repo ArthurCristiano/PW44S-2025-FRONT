@@ -70,7 +70,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
     const clearCart = () => {
         setCartItems([]);
-        setSelectedShipping(null); // Também limpa o frete ao limpar o carrinho
+        setSelectedShipping(null);
     };
 
     const selectShippingOption = (option: IShippingOption | null) => {

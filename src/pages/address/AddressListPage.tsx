@@ -31,7 +31,6 @@ export const AddressListPage: React.FC = () => {
         loadAddresses();
     }, []);
 
-    // Função para deletar um endereço após confirmação
     const handleDelete = (address: IAddress) => {
         confirmDialog({
             message: `Tem certeza que deseja excluir o endereço "${address.description}"?`,
@@ -59,13 +58,13 @@ export const AddressListPage: React.FC = () => {
             <div className="flex gap-2">
                 <Button
                     icon="pi pi-pencil"
-                    className="p-button-rounded p-button-success"
+                    className="p-button-rounded p-button-success p-button-text"
                     onClick={() => navigate(`/addresses/edit/${rowData.id}`)}
                     tooltip="Editar"
                 />
                 <Button
                     icon="pi pi-trash"
-                    className="p-button-rounded p-button-danger"
+                    className="p-button-rounded p-button-danger p-button-text"
                     onClick={() => handleDelete(rowData)}
                     tooltip="Excluir"
                 />
@@ -73,13 +72,12 @@ export const AddressListPage: React.FC = () => {
         );
     };
 
-    // Conteúdo da barra de ferramentas (botão "Novo Endereço")
     const toolbarContent = (
         <React.Fragment>
             <Button
                 label="Novo Endereço"
                 icon="pi pi-plus"
-                className="p-button-success"
+                className="p-button-success btnForm"
                 onClick={() => navigate('/addresses/new')}
             />
         </React.Fragment>
