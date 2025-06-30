@@ -94,6 +94,14 @@ const TopMenu: React.FC = () => {
                     />
                 </>
             )}
+
+            {!authenticated && (
+                <Button
+                    icon="pi pi-user"
+                    className="p-button-text p-button-secondary"
+                    onClick={() => navigate("/login")}
+                />
+            )}
         </div>
     );
 
