@@ -61,6 +61,7 @@ export interface IOrder {
     date: string;
     status: string;
     userId: number;
+    addressId: number;
     items: IOrderItem[];
 }
 

@@ -27,7 +27,7 @@ export function AppRoutes() {
                     <Route path="/addresses" element={<AddressListPage />} />
                     <Route path="/addresses/new" element={<AddressFormPage />} />
                     <Route path="/addresses/edit/:id" element={<AddressFormPage />} />
-                    <Route path="/checkout/:id" element={<CheckoutPage />} />
+                    <Route path="/checkout/:id?" element={<CheckoutPage />} />
                 </Route>
             </Route>
         </Routes>

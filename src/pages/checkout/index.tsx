@@ -12,10 +12,12 @@ import { Panel } from 'primereact/panel';
 import OrderService from '@/services/order-service';
 import AddressService from '@/services/address-service';
 import type { IOrder, IOrderItem, IAddress } from '@/commons/types';
+import { useCart } from '@/context/hooks/use-cart';
 
 export const CheckoutPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
+    const { clearCart } = useCart();
 
     const [order, setOrder] = useState<IOrder | null>(null);
     const [addresses, setAddresses] = useState<IAddress[]>([]);
@@ -26,7 +28,10 @@ export const CheckoutPage: React.FC = () => {
 
     useEffect(() => {
         const loadData = async () => {
-            if (!id) return;
+            if (!id) {
+                navigate('/cart');
+                return;
+            }
             setLoading(true);
             try {
                 const [orderResponse, addressResponse] = await Promise.all([
@@ -58,7 +63,7 @@ export const CheckoutPage: React.FC = () => {
         loadData();
     }, [id, navigate]);
 
-    const handleConfirmPayment = async () => {
+    const handleConfirmOrder = async () => {
         if (!selectedAddress) {
             toast.current?.show({ severity: 'warn', summary: 'Atenção', detail: 'Por favor, selecione um endereço de entrega.' });
             return;
@@ -67,19 +72,31 @@ export const CheckoutPage: React.FC = () => {
 
         setIsSubmitting(true);
 
-        const response = await OrderService.updateStatus(order.id, 'Concluído');
+        try {
+            const addressUpdateResponse = await OrderService.updateOrderAddress(order.id, selectedAddress);
 
-        if (response.success) {
+            if (!addressUpdateResponse.success) {
+                throw new Error(addressUpdateResponse.message || 'Falha ao atualizar o endereço.');
+            }
+
+            const statusUpdateResponse = await OrderService.updateStatus(order.id, 'Concluído');
+
+            if (!statusUpdateResponse.success) {
+                throw new Error(statusUpdateResponse.message || 'Falha ao atualizar o status.');
+            }
+
             toast.current?.show({
                 severity: 'success',
                 summary: 'Sucesso!',
-                detail: 'Pedido concluído com sucesso! Redirecionando para a página inicial.'
+                detail: 'Pedido concluído com sucesso!'
             });
+            clearCart();
             setTimeout(() => {
-                navigate('/home');
+                navigate('/orders');
             }, 2000);
-        } else {
-            toast.current?.show({ severity: 'error', summary: 'Erro', detail: response.message || 'Falha ao concluir o pedido.' });
+
+        } catch (error: any) {
+            toast.current?.show({ severity: 'error', summary: 'Erro', detail: error.message || 'Falha ao concluir o pedido.' });
             setIsSubmitting(false);
         }
     };
@@ -149,7 +166,7 @@ export const CheckoutPage: React.FC = () => {
                                     label="Concluir Pedido"
                                     icon="pi pi-check"
                                     className="p-button-success w-full btnForm"
-                                    onClick={handleConfirmPayment}
+                                    onClick={handleConfirmOrder}
                                     disabled={!selectedAddress || isSubmitting}
                                     loading={isSubmitting}
                                 />

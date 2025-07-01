@@ -8,7 +8,7 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Toast } from 'primereact/toast';
 import { useCart } from '@/context/hooks/use-cart';
 import OrderService from '@/services/order-service';
-import type { CartItem, IShippingOption } from '@/commons/types.ts';
+import type { CartItem, IShippingOption, IOrder } from '@/commons/types.ts';
 import { Divider } from 'primereact/divider';
 import { RadioButton } from 'primereact/radiobutton';
 import {InputText} from "primereact/inputtext";
@@ -30,6 +30,7 @@ export const CartPage: React.FC = () => {
     const [cep, setCep] = useState('');
     const [isCalculating, setIsCalculating] = useState(false);
     const [shippingOptions, setShippingOptions] = useState<IShippingOption[]>([]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleCalculateShipping = async () => {
         if (!cep.trim() || cep.replace(/\D/g, '').length !== 8) {
@@ -58,15 +59,18 @@ export const CartPage: React.FC = () => {
             return;
         }
 
+        setIsSubmitting(true);
         const response = await OrderService.createOrder(cartItems);
 
-        if (response.success) {
-            toast.current?.show({ severity: 'success', summary: 'Sucesso', detail: 'Pedido realizado com sucesso! Redirecionando...' });
-            clearCart();
-            setTimeout(() => navigate('/orders'), 2000);
+        if (response.success && response.data) {
+            const newOrder = response.data as IOrder;
+            toast.current?.show({ severity: 'success', summary: 'Sucesso', detail: 'Seu pedido foi iniciado! Selecione o endereço para finalizar.' });
+
+            setTimeout(() => navigate(`/checkout/${newOrder.id}`), 1500);
         } else {
-            toast.current?.show({ severity: 'error', summary: 'Erro', detail: response.message || 'Falha ao finalizar o pedido.' });
+            toast.current?.show({ severity: 'error', summary: 'Erro', detail: response.message || 'Falha ao iniciar o pedido.' });
         }
+        setIsSubmitting(false);
     };
 
     const formatCurrency = (value: number) => {
@@ -159,6 +163,7 @@ export const CartPage: React.FC = () => {
                                 className="p-button-lg w-full mt-3 btnForm"
                                 disabled={cartItems.length === 0}
                                 onClick={handleCheckout}
+                                loading={isSubmitting}
                             />
                         </div>
                     </div>
