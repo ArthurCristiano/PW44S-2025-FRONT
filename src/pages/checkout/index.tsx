@@ -64,41 +64,79 @@ export const CheckoutPage: React.FC = () => {
     }, [id, navigate]);
 
     const handleConfirmOrder = async () => {
-        if (!selectedAddress) {
-            toast.current?.show({ severity: 'warn', summary: 'Atenção', detail: 'Por favor, selecione um endereço de entrega.' });
-            return;
-        }
+        if (!validateSubmission()) return;
         if (!order) return;
 
         setIsSubmitting(true);
 
         try {
-            const addressUpdateResponse = await OrderService.updateOrderAddress(order.id, selectedAddress);
-
-            if (!addressUpdateResponse.success) {
-                throw new Error(addressUpdateResponse.message || 'Falha ao atualizar o endereço.');
-            }
-
-            const statusUpdateResponse = await OrderService.updateStatus(order.id, 'Concluído');
-
-            if (!statusUpdateResponse.success) {
-                throw new Error(statusUpdateResponse.message || 'Falha ao atualizar o status.');
-            }
+            await saveAddressAndStatus('AGUARDANDO_PAGAMENTO');
 
             toast.current?.show({
                 severity: 'success',
                 summary: 'Sucesso!',
-                detail: 'Pedido concluído com sucesso!'
+                detail: 'Pedido realizado! Aguardando pagamento.'
             });
-            clearCart();
-            setTimeout(() => {
-                navigate('/orders');
-            }, 2000);
+            finalizeProcess();
 
         } catch (error: any) {
-            toast.current?.show({ severity: 'error', summary: 'Erro', detail: error.message || 'Falha ao concluir o pedido.' });
-            setIsSubmitting(false);
+            handleError(error);
         }
+    };
+
+    const handlePayment = async () => {
+        if (!validateSubmission()) return;
+        if (!order) return;
+
+        setIsSubmitting(true);
+
+        try {
+            await saveAddressAndStatus('PAGO');
+
+            toast.current?.show({
+                severity: 'success',
+                summary: 'Pagamento Confirmado',
+                detail: 'Obrigado! Seu pagamento foi processado.'
+            });
+            finalizeProcess();
+
+        } catch (error: any) {
+            handleError(error);
+        }
+    };
+
+    const validateSubmission = (): boolean => {
+        if (!selectedAddress) {
+            toast.current?.show({ severity: 'warn', summary: 'Atenção', detail: 'Por favor, selecione um endereço de entrega.' });
+            return false;
+        }
+        return true;
+    };
+
+    const saveAddressAndStatus = async (status: string) => {
+        if (!order || !selectedAddress) return;
+
+        const addressUpdateResponse = await OrderService.updateOrderAddress(order.id, selectedAddress);
+        if (!addressUpdateResponse.success) {
+            throw new Error(addressUpdateResponse.message || 'Falha ao atualizar o endereço.');
+        }
+
+        const statusUpdateResponse = await OrderService.updateStatus(order.id, status);
+        if (!statusUpdateResponse.success) {
+            throw new Error(statusUpdateResponse.message || 'Falha ao atualizar o status.');
+        }
+    };
+
+    const finalizeProcess = () => {
+        clearCart();
+        setTimeout(() => {
+            navigate('/orders');
+        }, 2000);
+    };
+
+    const handleError = (error: any) => {
+        toast.current?.show({ severity: 'error', summary: 'Erro', detail: error.message || 'Ocorreu uma falha.' });
+        setIsSubmitting(false);
     };
 
     const formatCurrency = (value: number) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -161,15 +199,32 @@ export const CheckoutPage: React.FC = () => {
                             <Divider />
 
                             <div className="flex flex-column gap-2">
-                                <p>Clique abaixo para confirmar seu pedido.</p>
-                                <Button
-                                    label="Concluir Pedido"
-                                    icon="pi pi-check"
-                                    className="p-button-success w-full btnForm"
-                                    onClick={handleConfirmOrder}
-                                    disabled={!selectedAddress || isSubmitting}
-                                    loading={isSubmitting}
-                                />
+                                <p>Escolha como deseja prosseguir:</p>
+
+                                {/* AQUI ESTÃO OS DOIS BOTÕES LADO A LADO */}
+                                <div className="flex gap-2">
+                                    <Button
+                                        label="Apenas Concluir"
+                                        icon="pi pi-check"
+                                        className="p-button-outlined p-button-secondary flex-1"
+                                        onClick={handleConfirmOrder}
+                                        disabled={!selectedAddress || isSubmitting}
+                                        loading={isSubmitting}
+                                        tooltip="Salva o pedido como 'Aguardando Pagamento'"
+                                        tooltipOptions={{ position: 'bottom' }}
+                                    />
+
+                                    <Button
+                                        label="Pagar Agora"
+                                        icon="pi pi-wallet"
+                                        className="p-button-success flex-1"
+                                        onClick={handlePayment}
+                                        disabled={!selectedAddress || isSubmitting}
+                                        loading={isSubmitting}
+                                        tooltip="Salva o pedido como 'Pago'"
+                                        tooltipOptions={{ position: 'bottom' }}
+                                    />
+                                </div>
                             </div>
                         </Panel>
                     </div>

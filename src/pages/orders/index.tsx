@@ -63,7 +63,7 @@ export const OrderHistoryPage: React.FC = () => {
     const actionBodyTemplate = (order: IOrder) => {
         return (
             <div className="flex">
-                {order.status?.toLowerCase() === 'pendente' && (
+                {order.status?.toUpperCase() === 'AGUARDANDO_PAGAMENTO' && (
                     <Button
                         icon="pi pi-credit-card"
                         className="p-button-rounded p-button-success p-button-text"
