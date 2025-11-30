@@ -51,4 +51,6 @@ export default tseslint.config({
     ...reactDom.configs.recommended.rules,
   },
 })
+
+Vou fazer um readme bonito :up:
 ```
