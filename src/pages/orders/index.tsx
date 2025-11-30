@@ -35,11 +35,13 @@ export const OrderHistoryPage: React.FC = () => {
         loadUserOrders();
     }, []);
 
-    const getStatusSeverity = (status: string | undefined): 'success' | 'warning' | 'danger' | 'info' => {
-        switch (status?.toLowerCase()) {
-            case 'pendente': return 'warning';
-            case 'concluído': return 'success';
-            case 'cancelado': return 'danger';
+    const getStatusSeverity = (status: string | undefined): 'success' | 'warning' | 'danger' | 'info' | null => {
+        switch (status) {
+            case 'AGUARDANDO_PAGAMENTO': return 'warning';
+            case 'PAGO': return 'success';
+            case 'EM_TRANSPORTE': return 'info';
+            case 'ENTREGUE': return 'success';
+            case 'CANCELADO': return 'danger';
             default: return 'info';
         }
     };

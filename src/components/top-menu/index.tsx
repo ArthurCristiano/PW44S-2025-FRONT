@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Menubar } from "primereact/menubar";
-import  type { MenuItem } from "primereact/menuitem";
+import type { MenuItem } from "primereact/menuitem";
 import { Button } from "primereact/button";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/hooks/use-auth.ts";
@@ -14,8 +14,13 @@ const TopMenu: React.FC = () => {
     const [darkMode, setDarkMode] = useState<boolean>(() => {
         return localStorage.getItem("theme") === "dark";
     });
-    const { authenticated, handleLogout } = useAuth();
+
+    const { authenticated, handleLogout, authenticatedUser } = useAuth();
     const { cartCount } = useCart();
+
+    const isAdmin = authenticated && authenticatedUser?.authorities?.some(
+        (auth) => auth.authority === 'ROLE_ADMIN'
+    );
 
     useEffect(() => {
         const themeLink = document.getElementById("theme-link") as HTMLLinkElement;
@@ -58,6 +63,15 @@ const TopMenu: React.FC = () => {
             { label: "Pedidos", icon: "pi pi-receipt", command: () => navigate("/orders") },
         ]
         : [];
+
+    if (isAdmin) {
+        menuItems.push({
+            label: "Painel Administrativo",
+            icon: "pi pi-cog",
+            className: "font-bold text-primary",
+            command: () => navigate("/admin/dashboard")
+        });
+    }
 
     const logo = (
         <div

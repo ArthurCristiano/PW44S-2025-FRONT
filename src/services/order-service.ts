@@ -128,12 +128,35 @@ const updateOrderAddress = async (orderId: number, addressId: number): Promise<I
     return response;
 };
 
+const findAll = async (): Promise<IResponse> => {
+    let response = {} as IResponse;
+    try {
+
+        const apiResponse = await api.get<IOrder[]>(orderURL);
+        response = {
+            status: 200,
+            success: true,
+            message: "Lista de pedidos carregada com sucesso!",
+            data: apiResponse.data,
+        };
+    } catch (err: any) {
+        response = {
+            status: err.response?.status || 500,
+            success: false,
+            message: err.response?.data?.message || "Falha ao carregar a lista de pedidos.",
+            data: err.response?.data,
+        };
+    }
+    return response;
+};
+
 const OrderService = {
     createOrder,
     findByUser,
     findById,
     updateStatus,
     updateOrderAddress,
+    findAll
 };
 
 export default OrderService;
