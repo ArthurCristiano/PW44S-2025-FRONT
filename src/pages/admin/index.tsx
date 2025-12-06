@@ -148,8 +148,18 @@ export const AdminPage: React.FC = () => {
     const orderActionTemplate = (order: IOrder) => {
         return (
             <div className="flex justify-content-center gap-2">
-                <Button icon="pi pi-save" className="p-button-rounded p-button-success p-button-text" tooltip="Salvar Status" onClick={() => handleSaveStatus(order)} />
-                <Button icon="pi pi-pencil" className="p-button-rounded p-button-info p-button-text" tooltip="Ver Detalhes" onClick={() => navigate(`/admin/orders/${order.id}`)} />
+                <Button
+                    icon="pi pi-save"
+                    className="p-button-rounded p-button-success p-button-text"
+                    tooltip="Salvar Status"
+                    onClick={() => handleSaveStatus(order)}
+                />
+                <Button
+                    icon="pi pi-pencil"
+                    className="p-button-rounded p-button-info p-button-text"
+                    tooltip="Ver Detalhes e Anexos"
+                    onClick={() => navigate(`/admin/orders/${order.id}`)}
+                />
             </div>
         );
     };

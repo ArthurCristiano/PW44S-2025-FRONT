@@ -10,6 +10,7 @@ import { AddressFormPage  } from "@/pages/address/index.tsx";
 import { AddressListPage } from "@/pages/address/AddressListPage.tsx";
 import { CheckoutPage } from "@/pages/checkout/index.tsx";
 import { AdminPage } from "@/pages/admin/index.tsx";
+import { AdminOrderDetailsPage } from "@/pages/AdminOrderDetailsPage/index.tsx";
 
 export function AppRoutes() {
     return (
@@ -31,6 +32,7 @@ export function AppRoutes() {
                     <Route path="/checkout/:id?" element={<CheckoutPage />} />
 
                     <Route path="/admin/dashboard" element={<AdminPage />} />
+                    <Route path="/admin/orders/:id" element={<AdminOrderDetailsPage />} />
                 </Route>
             </Route>
         </Routes>

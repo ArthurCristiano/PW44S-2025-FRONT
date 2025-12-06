@@ -150,13 +150,77 @@ const findAll = async (): Promise<IResponse> => {
     return response;
 };
 
+const uploadAttachment = async (orderId: number, file: File): Promise<IResponse> => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    let response = {} as IResponse;
+    try {
+        await api.post(`${orderURL}/${orderId}/attachments`, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
+        response = { success: true, message: "Upload realizado!" };
+    } catch (err: any) {
+        response = { success: false, message: "Erro no upload." };
+    }
+    return response;
+};
+
+const getAttachments = async (orderId: number): Promise<any> => {
+    try {
+        const res = await api.get(`${orderURL}/${orderId}/attachments`);
+        return { success: true, data: res.data };
+    } catch (err) {
+        return { success: false, data: [] };
+    }
+};
+
+const downloadAttachment = async (attachmentId: number, fileName: string) => {
+    try {
+        const response = await api.get(`${orderURL}/attachments/${attachmentId}/download`, {
+            responseType: 'blob',
+        });
+
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', fileName);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+    } catch (error) {
+        console.error("Erro ao baixar", error);
+    }
+};
+
+const viewAttachment = async (attachmentId: number, fileType: string) => {
+    try {
+        const response = await api.get(`${orderURL}/attachments/${attachmentId}/download`, {
+            responseType: 'blob',
+        });
+
+        const blob = new Blob([response.data], { type: fileType });
+
+        const url = window.URL.createObjectURL(blob);
+
+        window.open(url, '_blank');
+
+    } catch (error) {
+        console.error("Erro ao abrir arquivo", error);
+    }
+};
+
 const OrderService = {
     createOrder,
     findByUser,
     findById,
     updateStatus,
     updateOrderAddress,
-    findAll
+    findAll,
+    uploadAttachment,
+    getAttachments,
+    downloadAttachment,
+    viewAttachment
 };
 
 export default OrderService;
